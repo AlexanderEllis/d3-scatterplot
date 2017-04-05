@@ -39,13 +39,38 @@ d3.json(URL, function(error, data) {
         .attr('cy', 0)
         .attr('r', '6')
         .style('fill', d => d.Doping === '' ? '#7aff83' : '#d61b1b')
-    
+        .on('mouseover', d => d3.select('.tooltip')
+                                    .style('visibility', 'visible')
+                                    .html('<h3>' + d.Name + ', ' + d.Nationality + '</h3><h4>Ranking: ' + 
+                                          d.Place + '</h3><p><b>Year:</b> ' + d.Year + '   <b>Time:</b> ' + d.Time + 
+                                          '</p><p><b>Doping:</b> ' + d.Doping + '</p>')) 
+        .on('mousemove', d => d3.select('.tooltip')
+                                    .style('top', (d3.event.pageY) + 'px')
+                                    .style('left', (d3.event.pageX + 5) + 'px'))
+        .on('mouseleave', d => d3.select('.tooltip')
+                                    .style('visibility', 'hidden'));
     // Separate call to plot.append required because plot.append('circle') returns the circle as parent, and we can't put
     // text element inside of a shape element
     plot.append('text')
         .attr('transform', 'translate(' + 10 + ',' + 4 + ')')
         .text(d => d.Name)
         .style('font-size', '12px');
+
+    // Adding tooltip for hovering over cyclist circle
+    d3.select('body').append('div')
+        .attr('class', 'tooltip')
+        .attr('height', '200px')
+        .attr('width', '300px')
+        .style('visibility', 'hidden')
+        .style('position', 'absolute')
+        .style('z-index', '10')
+        .style('background-color', '#CCC')
+        .style('opacity', '.9')
+        .style('text-align', 'center')
+        .style('border-radius', '3px')
+        .style('border', '1px solid #444')
+        .style('padding-left', '11px')
+        .style('padding-right', '11px')
     
     // Create the y axis with 10 ticks
     svg.append('g')
@@ -81,4 +106,5 @@ d3.json(URL, function(error, data) {
         .attr('transform', 'translate(' + (width / 2) + ',' + (margin.top / 2 + 25) + ')')
         .attr('font-size', '20px')
         .text('Normalized to 13.8km distance')
+
 });
